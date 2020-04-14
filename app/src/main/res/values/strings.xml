@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Quick Journal</string>
+    <string name="currentMonth">April</string>
+    <string name="dayPlaceholder">DD</string>
+    <string name="date_placeholder">Weekday, Month DD</string>
+    <string name="location_placeholder">Written at Random place in City, XX</string>
+</resources>
