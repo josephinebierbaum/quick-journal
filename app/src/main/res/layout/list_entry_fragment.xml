@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/entryTitle"
+        android:id="@+id/entry_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -28,7 +28,7 @@
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/entryTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/entry_title" />
 
     <TextView
         android:id="@+id/entry_writing_preview"
@@ -41,5 +41,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/entry_thumbnail"
-        app:layout_constraintTop_toBottomOf="@+id/entryTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/entry_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>
