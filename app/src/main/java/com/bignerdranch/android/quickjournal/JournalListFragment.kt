@@ -1,5 +1,6 @@
 package com.bignerdranch.android.quickjournal
 
+import android.content.Context
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
@@ -9,12 +10,15 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+import kotlin.NoSuchElementException
 
 private const val TAG = "JournalListFragment"
+
 class JournalListFragment: Fragment(){
     private lateinit var journalRecyclerView:RecyclerView
     private lateinit var sundayButton:TextView
@@ -35,16 +39,25 @@ class JournalListFragment: Fragment(){
     private lateinit var nextWeekButton:ImageButton
     private lateinit var currentMonth: TextView
     private lateinit var createEntryButton: ImageButton
-    private var adapter: EntryAdapter? = null
+    private var adapter: EntryAdapter? = EntryAdapter(emptyList())
     //private var currentDayViewing = ""+DateFormat.format("EEEE, LLLL dd, yyyy",Date())
     private var currentDayViewing = Date()
     private val journalListViewModel:JournalListViewModel by lazy{
         ViewModelProviders.of(this).get(JournalListViewModel::class.java)
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total entries: ${journalListViewModel.entries.size}")
+    interface Callbacks {
+        fun onEntrySelected(entryId: UUID)
+        fun onEditEntrySelected(entryId: UUID)
     }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks?
+    }
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+    private var callbacks: Callbacks? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,47 +85,127 @@ class JournalListFragment: Fragment(){
         journalRecyclerView =
             view.findViewById(R.id.fragment_journal_container) as RecyclerView
         journalRecyclerView.layoutManager = LinearLayoutManager(context)
-        updateUI()
+        journalRecyclerView.adapter = adapter
         return view
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        journalListViewModel.entryListLiveData.observe(
+            viewLifecycleOwner,
+            Observer { entries ->
+                entries?.let {
+                    Log.i(TAG, "Got entries ${entries.size}")
+                    updateUI(entries)
+                }
+            })
     }
     override fun onStart(){
         super.onStart()
         sundayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 1)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         mondayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 2)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         tuesdayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 3)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         wednesdayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 4)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         thursdayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 5)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         fridayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 6)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         saturdayButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 7)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         prevWeekButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 0, false)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
         nextWeekButton.setOnClickListener{
             currentDayViewing = determineDate(currentDayViewing, 0, true)
-            updateUI()
+            journalListViewModel.entryListLiveData.observe(
+                viewLifecycleOwner,
+                Observer { entries ->
+                    entries?.let {
+                        Log.i(TAG, "Got entries ${entries.size}")
+                        updateUI(entries)
+                    }
+                })
         }
+        createEntryButton.setOnClickListener{
+            val entry = JournalEntry()
+            journalListViewModel.addEntry(entry)
+            callbacks?.onEditEntrySelected(entry.id)
+        }
+        //possibly add updateUI here
     }
     //dir is direction of movement, true for forward and false for backward
     //remember for Calendar.DAY_OF_WEEK, starts with Sunday at 1
@@ -133,8 +226,27 @@ class JournalListFragment: Fragment(){
         Log.d(TAG, "Returning $logmes")
         return cal.time
     }
-    private fun updateUI() {
+    //once app starts, uses this version of updateUI to update
+    private fun updateUI(){
         val entries = journalListViewModel.entries
+        var index = -1
+        val dayEntries:List<JournalEntry>
+        try{
+            var indexToGet = entries.first{DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
+            index = entries.indexOf(indexToGet)
+        }
+        catch(e: NoSuchElementException){
+            index = -1
+        }
+        if (index != -1)
+            dayEntries = entries.subList(index,entries.lastIndex).takeWhile {DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
+        else
+            dayEntries = emptyList()
+        Log.d(TAG, "Returning $dayEntries.size")
+        adapter = EntryAdapter(dayEntries)
+        journalRecyclerView.adapter = adapter
+    }
+    private fun updateUI(entries:List<JournalEntry>) {
         var index = -1
         val dayEntries:List<JournalEntry>
         try{
@@ -172,6 +284,7 @@ class JournalListFragment: Fragment(){
 
         override fun onClick(v: View?) {
             //add code to go to edit_journal_fragment here
+            callbacks?.onEntrySelected(entry.id)
         }
     }
     private inner class EntryAdapter(var entries: List<JournalEntry>)

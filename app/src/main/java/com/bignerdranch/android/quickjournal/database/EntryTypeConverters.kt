@@ -1,4 +1,4 @@
-package database
+package com.bignerdranch.android.quickjournal.database
 
 import androidx.room.TypeConverter
 import java.util.*
