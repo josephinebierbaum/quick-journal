@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import java.util.*
 
-class ShortcutEditViewModel: ViewModel() {
+class ShortcutInsertViewModel: ViewModel() {
     private val shortcutRepository = ShortcutRepository.get()
     private val shortcutIdLiveData = MutableLiveData<UUID>()
     var shortcutLiveData: LiveData<Shortcut?> =
@@ -16,7 +16,16 @@ class ShortcutEditViewModel: ViewModel() {
     fun loadShortcut(shortcutId: UUID) {
         shortcutIdLiveData.value = shortcutId
     }
-    fun saveShortcut(shortcut: Shortcut) {
-        shortcutRepository.updateShortcut(shortcut)
+    private val entryRepository = EntryRepository.get()
+    private val entryIdLiveData = MutableLiveData<UUID>()
+    var entryLiveData: LiveData<JournalEntry?> =
+        Transformations.switchMap(entryIdLiveData) { entryId ->
+            entryRepository.getEntry(entryId)
+        }
+    fun loadEntry(entryId: UUID) {
+        entryIdLiveData.value = entryId
+    }
+    fun saveEntry(entry: JournalEntry) {
+        entryRepository.updateEntry(entry)
     }
 }

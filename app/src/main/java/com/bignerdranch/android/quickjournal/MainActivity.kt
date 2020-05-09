@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 private const val TAG = "MainActivity"
-class MainActivity : AppCompatActivity(),JournalListFragment.Callbacks, EntryFragment.Callbacks {
+class MainActivity : AppCompatActivity(),JournalListFragment.Callbacks, EntryFragment.Callbacks, EntryEditFragment.Callbacks, ShortcutListFragment.Callbacks,ShortcutInsertFragment.Callbacks {
     private lateinit var homePageRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,43 @@ class MainActivity : AppCompatActivity(),JournalListFragment.Callbacks, EntryFra
             .commit()
     }
     override fun onEditEntrySelected(entryId: UUID) {
-        Log.d(TAG, "MainActivity.onEntrySelected: $entryId")
+        Log.d(TAG, "MainActivity.onEditEntrySelected: $entryId")
+        val fragment = EntryEditFragment.newInstance(entryId)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    override fun onShortcutListSelected(entryId: UUID) {
+        Log.d(TAG, "MainActivity.onShortcutListSelected: $entryId")
+        val fragment = ShortcutListFragment.newInstance(entryId)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    override fun onShortcutSelected(entryId:UUID,shortcutId: UUID) {
+        Log.d(TAG, "MainActivity.onInsertShortcutSelected: $shortcutId")
+        val fragment = ShortcutInsertFragment.newInstance(entryId,shortcutId)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    override fun onEditShortcutSelected(entryId:UUID,shortcutId: UUID) {
+        Log.d(TAG, "MainActivity.onEditShortcutSelected: $shortcutId")
+        val fragment = ShortcutEditFragment.newInstance(entryId,shortcutId)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    override fun onReturnEntrySelected(entryId: UUID) {
+        Log.d(TAG, "MainActivity.ReturnEntrySelected: $entryId")
         val fragment = EntryEditFragment.newInstance(entryId)
         supportFragmentManager
             .beginTransaction()

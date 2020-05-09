@@ -1,5 +1,6 @@
 package com.bignerdranch.android.quickjournal
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -98,6 +99,9 @@ class EntryEditFragment: Fragment() {
         }
         entryTitle.addTextChangedListener(titleWatcher)
         entryWriting.addTextChangedListener(writingWatcher)
+        addShortcutButton.setOnClickListener{
+            callbacks?.onShortcutListSelected(entry.id)
+        }
         publishEntryButton.setOnClickListener {
             entryEditViewModel.saveEntry(entry)
         }
@@ -133,5 +137,17 @@ class EntryEditFragment: Fragment() {
                 arguments = args
             }
         }
+    }
+    interface Callbacks {
+        fun onShortcutListSelected(entryId: UUID)
+    }
+    private var callbacks: Callbacks? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks?
+    }
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 }

@@ -6,5 +6,6 @@ import java.util.*
 @Entity
 data class Shortcut(@PrimaryKey val id: UUID = UUID.randomUUID(),
                     var title: String = "",
-                    var fields: MutableList<String> = mutableListOf<String>(),
+                    //var field: MutableList<String> = mutableListOf<String>(),
+                    var field1:String = "",
                     var result: String = "")

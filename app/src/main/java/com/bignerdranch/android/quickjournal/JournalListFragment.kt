@@ -235,7 +235,7 @@ class JournalListFragment: Fragment(){
             var indexToGet = entries.first{DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
             index = entries.indexOf(indexToGet)
         }
-        catch(e: NoSuchElementException){
+        catch(e:NoSuchElementException){
             index = -1
         }
         if (index != -1)

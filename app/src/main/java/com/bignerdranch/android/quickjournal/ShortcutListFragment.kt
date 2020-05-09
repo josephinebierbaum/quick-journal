@@ -1,5 +1,6 @@
 package com.bignerdranch.android.quickjournal
 
+import android.content.Context
 import android.media.Image
 import android.os.Bundle
 import android.util.Log
@@ -14,14 +15,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
+private const val ARG_ENTRY_ID = "entry_id"
 private const val TAG = "ShortcutListFragment"
 class ShortcutListFragment : Fragment() {
+    private lateinit var entryId: UUID
     private lateinit var shortcutRecyclerView: RecyclerView
     private lateinit var createShortcutButton: ImageButton
     private var adapter: ShortcutAdapter? = ShortcutAdapter(emptyList())
     private val shortcutListViewModel: ShortcutListViewModel by lazy {
         ViewModelProviders.of(this).get(ShortcutListViewModel::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        entryId = arguments?.getSerializable(ARG_ENTRY_ID) as UUID
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +56,14 @@ class ShortcutListFragment : Fragment() {
                 }
             })
     }
+    override fun onStart(){
+        super.onStart()
+        createShortcutButton.setOnClickListener{
+            val shortcut = Shortcut()
+            shortcutListViewModel.addShortcut(shortcut)
+            callbacks?.onEditShortcutSelected(entryId,shortcut.id)
+        }
+    }
     private fun updateUI(shortcuts:List<Shortcut>) {
         adapter = ShortcutAdapter(shortcuts)
         shortcutRecyclerView.adapter = adapter
@@ -63,13 +80,11 @@ class ShortcutListFragment : Fragment() {
         fun bind(shortcut:Shortcut){
             this.shortcut = shortcut
             titleTextView.text = this.shortcut.title
-            fieldTextView.text = this.shortcut.fields.toString()
+            fieldTextView.text = this.shortcut.field1
             resultTextView.text = this.shortcut.result
         }
         override fun onClick(v: View) {
-            //change to go to fill out shortcut here
-            Toast.makeText(context, "${shortcut.title} pressed!", Toast.LENGTH_SHORT)
-                .show()
+            callbacks?.onShortcutSelected(entryId,shortcut.id)
         }
     }
     private inner class ShortcutAdapter(var shortcuts: List<Shortcut>)
@@ -86,8 +101,27 @@ class ShortcutListFragment : Fragment() {
         }
     }
     companion object {
-        fun newInstance(): ShortcutListFragment {
-            return ShortcutListFragment()
+        fun newInstance(entryId:UUID): ShortcutListFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_ENTRY_ID, entryId)
+            }
+            return ShortcutListFragment().apply {
+                arguments = args
+            }
+            //return ShortcutListFragment()
         }
+    }
+    interface Callbacks {
+        fun onShortcutSelected(entryId:UUID, shortcutId: UUID)
+        fun onEditShortcutSelected(entryId: UUID, shortcutID: UUID)
+    }
+    private var callbacks: Callbacks? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks?
+    }
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 }
