@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.bignerdranch.android.quickjournal.database.EntryDatabase
+import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -16,6 +17,9 @@ class EntryRepository private constructor(context: Context) {
     ).build()
     private val entryDao = database.entryDao()
     private val executor = Executors.newSingleThreadExecutor()
+    private val filesDir = context.applicationContext.filesDir
+    fun getPhoto1File(entry:JournalEntry): File = File(filesDir, entry.photo1)
+    fun getPhoto2File(entry:JournalEntry): File = File(filesDir, entry.photo2)
     fun getEntries(): LiveData<List<JournalEntry>> = entryDao.getEntries()
     fun getEntry(id: UUID): LiveData<JournalEntry?> = entryDao.getEntry(id)
     fun updateEntry(entry: JournalEntry) {

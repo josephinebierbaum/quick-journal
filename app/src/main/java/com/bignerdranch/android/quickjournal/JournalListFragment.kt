@@ -1,6 +1,7 @@
 package com.bignerdranch.android.quickjournal
 
 import android.content.Context
+import android.media.Image
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
@@ -8,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.File
 import java.util.*
 import kotlin.NoSuchElementException
 
@@ -242,7 +245,7 @@ class JournalListFragment: Fragment(){
             dayEntries = entries.subList(index,entries.lastIndex).takeWhile {DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
         else
             dayEntries = emptyList()
-        Log.d(TAG, "Returning $dayEntries.size")
+        Log.d(TAG, "Returning ${dayEntries.size}")
         adapter = EntryAdapter(dayEntries)
         journalRecyclerView.adapter = adapter
     }
@@ -256,12 +259,43 @@ class JournalListFragment: Fragment(){
         catch(e: NoSuchElementException){
             index = -1
         }
-        if (index != -1)
-            dayEntries = entries.subList(index,entries.lastIndex).takeWhile {DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
+        if (index != -1){
+            var partEntries = entries.subList(index,entries.lastIndex).takeWhile {DateFormat.format("EEEE, LLLL dd, yyyy",it.date)== DateFormat.format("EEEE, LLLL dd, yyyy",currentDayViewing)}
+            if (DateFormat.format("EEEE, LLLL dd, yyyy",entries[index].date) == DateFormat.format("EEEE, LLLL dd, yyyy",entries.last().date))
+                dayEntries = partEntries + entries.last()
+            else
+                dayEntries = partEntries
+            Log.d(TAG, "${entries.last()}")
+        }
         else
             dayEntries = emptyList()
+        Log.d(TAG, "${entries.size}")
+        Log.d(TAG, "${dayEntries.size}")
+        Log.d(TAG, "Returning $dayEntries")
         adapter = EntryAdapter(dayEntries)
         journalRecyclerView.adapter = adapter
+        //start to changing day num display
+        var cal = Calendar.getInstance()
+        cal.setTime(currentDayViewing)
+        currentMonth.setText("${cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())}")
+        var dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
+        var changeToSunday = (dayOfWeek - 1)*-1
+        //var sunDay = changeToSunday + cal.get(Calendar.DAY_OF_MONTH)
+        //set text to "${sunDay+2}"
+        cal.add(Calendar.DATE,changeToSunday)
+        sunDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        monDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        tueDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        wedDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        thuDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        friDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
+        cal.add(Calendar.DATE,1)
+        satDayNum.setText("${cal.get(Calendar.DAY_OF_MONTH)}")
     }
     companion object {
         fun newInstance(): JournalListFragment {
@@ -273,6 +307,7 @@ class JournalListFragment: Fragment(){
         private lateinit var entry:JournalEntry
         private val titleTextView: TextView = itemView.findViewById(R.id.entry_title)
         private val previewTextView: TextView = itemView.findViewById(R.id.entry_writing_preview)
+        private val thumbnailImage: ImageView = itemView.findViewById(R.id.entry_thumbnail)
         init {
             itemView.setOnClickListener(this)
         }
@@ -280,6 +315,13 @@ class JournalListFragment: Fragment(){
             this.entry = entry
             titleTextView.text = this.entry.title
             previewTextView.text = this.entry.writing
+            var photo1File:File = journalListViewModel.getPhoto1File(entry)
+            if (photo1File.exists()) {
+                val bitmap = getScaledBitmap(photo1File.path, requireActivity())
+                thumbnailImage.setImageBitmap(bitmap)
+            } else {
+                thumbnailImage.setImageDrawable(null)
+            }
         }
 
         override fun onClick(v: View?) {

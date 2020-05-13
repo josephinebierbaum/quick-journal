@@ -2,6 +2,7 @@ package com.bignerdranch.android.quickjournal
 
 import android.text.format.DateFormat
 import androidx.lifecycle.ViewModel
+import java.io.File
 import java.util.*
 
 class JournalListViewModel: ViewModel() {
@@ -10,6 +11,9 @@ class JournalListViewModel: ViewModel() {
     val entryListLiveData = entryRepository.getEntries()
     fun addEntry(entry:JournalEntry) {
         entryRepository.addEntry(entry)
+    }
+    fun getPhoto1File(entry: JournalEntry): File {
+        return entryRepository.getPhoto1File(entry)
     }
 //    init {
 //        for (x in 1..20){

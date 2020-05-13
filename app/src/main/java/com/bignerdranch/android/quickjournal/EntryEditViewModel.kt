@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import java.io.File
 import java.util.*
 
 class EntryEditViewModel() : ViewModel() {
@@ -18,5 +19,11 @@ class EntryEditViewModel() : ViewModel() {
     }
     fun saveEntry(entry: JournalEntry) {
         entryRepository.updateEntry(entry)
+    }
+    fun getPhoto1File(entry: JournalEntry): File {
+        return entryRepository.getPhoto1File(entry)
+    }
+    fun getPhoto2File(entry: JournalEntry): File {
+        return entryRepository.getPhoto2File(entry)
     }
 }

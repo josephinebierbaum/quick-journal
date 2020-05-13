@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import java.util.UUID
 import java.util.Date
 import android.text.format.DateFormat
+import java.io.File
 
 private const val ARG_ENTRY_ID = "entry_id"
 private const val TAG = "EntryFragment"
@@ -29,6 +30,8 @@ class EntryFragment: Fragment() {
     private lateinit var entryWriting: TextView
     private lateinit var entryLocation: TextView
     private lateinit var editEntryButton: ImageButton
+    private lateinit var photo1File: File
+    private lateinit var photo2File: File
     private val entryViewModel: EntryViewModel by lazy {
         ViewModelProviders.of(this).get(EntryViewModel::class.java)
     }
@@ -61,6 +64,8 @@ class EntryFragment: Fragment() {
             Observer { entry ->
                 entry?.let {
                     this.entry = entry
+                    photo1File = entryViewModel.getPhoto1File(entry)
+                    photo2File = entryViewModel.getPhoto2File(entry)
                     updateUI()
                 }
             })
@@ -71,12 +76,27 @@ class EntryFragment: Fragment() {
             callbacks?.onEditEntrySelected(entry.id)
         }
     }
+    private fun updatePhotoView() {
+        if (photo1File.exists()) {
+            val bitmap = getScaledBitmap(photo1File.path, requireActivity())
+            entryPhoto1.setImageBitmap(bitmap)
+        } else {
+            entryPhoto1.setImageDrawable(null)
+        }
+        if (photo2File.exists()) {
+            val bitmap = getScaledBitmap(photo2File.path, requireActivity())
+            entryPhoto2.setImageBitmap(bitmap)
+        } else {
+            entryPhoto2.setImageDrawable(null)
+        }
+    }
     private fun updateUI() {
         entryTitle.setText(entry.title)
         var date = DateFormat.format("EEEE, LLLL dd, yyyy",entry.date)
         entryDate.setText(date)
         entryWriting.setText(entry.writing)
         entryLocation.setText(entry.location)
+        updatePhotoView()
     }
     companion object {
         fun newInstance(entryId: UUID): EntryFragment {

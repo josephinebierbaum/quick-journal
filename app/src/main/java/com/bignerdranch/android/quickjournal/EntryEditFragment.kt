@@ -1,7 +1,13 @@
 package com.bignerdranch.android.quickjournal
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
@@ -10,13 +16,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import java.io.File
 import java.util.UUID
 
 private const val ARG_ENTRY_ID = "entry_id"
 private const val TAG = "EntryEditFragment"
+private const val REQUEST_PHOTO1 = 1
+private const val REQUEST_PHOTO2 = 1
 class EntryEditFragment: Fragment() {
     private lateinit var entry:JournalEntry
     private lateinit var entryTitle: EditText
@@ -27,6 +37,10 @@ class EntryEditFragment: Fragment() {
     private lateinit var entryPhoto2: ImageView
     private lateinit var addShortcutButton: ImageButton
     private lateinit var publishEntryButton: Button
+    private lateinit var photo1File: File
+    private lateinit var photo2File: File
+    private lateinit var photo1Uri: Uri
+    private lateinit var photo2Uri: Uri
     private val entryEditViewModel: EntryEditViewModel by lazy {
         ViewModelProviders.of(this).get(EntryEditViewModel::class.java)
     }
@@ -105,6 +119,52 @@ class EntryEditFragment: Fragment() {
         publishEntryButton.setOnClickListener {
             entryEditViewModel.saveEntry(entry)
         }
+        entryPhoto1.apply {
+            val packageManager: PackageManager = requireActivity().packageManager
+            val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val resolvedActivity: ResolveInfo? =
+                packageManager.resolveActivity(captureImage,
+                    PackageManager.MATCH_DEFAULT_ONLY)
+            if (resolvedActivity == null) {
+                isEnabled = false
+            }
+            setOnClickListener {
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photo1Uri)
+                val cameraActivities: List<ResolveInfo> =
+                    packageManager.queryIntentActivities(captureImage,
+                        PackageManager.MATCH_DEFAULT_ONLY)
+                for (cameraActivity in cameraActivities) {
+                    requireActivity().grantUriPermission(
+                        cameraActivity.activityInfo.packageName,
+                        photo1Uri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                }
+                startActivityForResult(captureImage, REQUEST_PHOTO1)
+            }
+        }
+        entryPhoto2.apply {
+            val packageManager: PackageManager = requireActivity().packageManager
+            val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val resolvedActivity: ResolveInfo? =
+                packageManager.resolveActivity(captureImage,
+                    PackageManager.MATCH_DEFAULT_ONLY)
+            if (resolvedActivity == null) {
+                isEnabled = false
+            }
+            setOnClickListener {
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photo2Uri)
+                val cameraActivities: List<ResolveInfo> =
+                    packageManager.queryIntentActivities(captureImage,
+                        PackageManager.MATCH_DEFAULT_ONLY)
+                for (cameraActivity in cameraActivities) {
+                    requireActivity().grantUriPermission(
+                        cameraActivity.activityInfo.packageName,
+                        photo2Uri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                }
+                startActivityForResult(captureImage, REQUEST_PHOTO2)
+            }
+        }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -113,6 +173,14 @@ class EntryEditFragment: Fragment() {
             Observer { entry ->
                 entry?.let {
                     this.entry = entry
+                    photo1File = entryEditViewModel.getPhoto1File(entry)
+                    photo2File = entryEditViewModel.getPhoto2File(entry)
+                    photo1Uri = FileProvider.getUriForFile(requireActivity(),
+                        "com.bignerdranch.android.quickjournal.fileprovider",
+                        photo1File)
+                    photo2Uri = FileProvider.getUriForFile(requireActivity(),
+                        "com.bignerdranch.android.quickjournal.fileprovider",
+                        photo2File)
                     updateUI()
                 }
             })
@@ -123,10 +191,40 @@ class EntryEditFragment: Fragment() {
         entryDate.setText(date)
         entryWriting.setText(entry.writing)
         entryLocation.setText(entry.location)
+        updatePhotoView()
+    }
+    private fun updatePhotoView() {
+        if (photo1File.exists()) {
+            val bitmap = getScaledBitmap(photo1File.path, requireActivity())
+            entryPhoto1.setImageBitmap(bitmap)
+        } else {
+            entryPhoto1.setImageDrawable(null)
+        }
+        if (photo2File.exists()) {
+            val bitmap = getScaledBitmap(photo2File.path, requireActivity())
+            entryPhoto2.setImageBitmap(bitmap)
+        } else {
+            entryPhoto2.setImageDrawable(null)
+        }
     }
     override fun onStop() {
         super.onStop()
         entryEditViewModel.saveEntry(entry)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            resultCode != Activity.RESULT_OK -> return
+            requestCode == REQUEST_PHOTO1 -> {
+                requireActivity().revokeUriPermission(photo1Uri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                updatePhotoView()
+            }
+            requestCode == REQUEST_PHOTO2 -> {
+                requireActivity().revokeUriPermission(photo2Uri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                updatePhotoView()
+            }
+        }
     }
     companion object {
         fun newInstance(entryId: UUID): EntryEditFragment {
@@ -148,6 +246,10 @@ class EntryEditFragment: Fragment() {
     }
     override fun onDetach() {
         super.onDetach()
+        requireActivity().revokeUriPermission(photo1Uri,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        requireActivity().revokeUriPermission(photo2Uri,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         callbacks = null
     }
 }
