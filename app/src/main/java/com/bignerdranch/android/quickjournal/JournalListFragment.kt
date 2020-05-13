@@ -205,6 +205,7 @@ class JournalListFragment: Fragment(){
         }
         createEntryButton.setOnClickListener{
             val entry = JournalEntry()
+            entry.date = currentDayViewing
             journalListViewModel.addEntry(entry)
             callbacks?.onEditEntrySelected(entry.id)
         }

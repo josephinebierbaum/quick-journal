@@ -28,6 +28,7 @@ class ShortcutInsertFragment: Fragment() {
     private lateinit var field1: EditText
     private lateinit var result: TextView
     private lateinit var fillFields: Array<String>
+    private lateinit var previewButton: Button
     private lateinit var publishShortcutButton: Button
     private val shortcutInsertViewModel: ShortcutInsertViewModel by lazy {
         ViewModelProviders.of(this).get(ShortcutInsertViewModel::class.java)
@@ -53,6 +54,7 @@ class ShortcutInsertFragment: Fragment() {
         editShortcutButton = view.findViewById(R.id.edit_shortcut)
         field1 = view.findViewById(R.id.field1)
         result = view.findViewById(R.id.result)
+        previewButton = view.findViewById(R.id.preview_result)
         publishShortcutButton = view.findViewById(R.id.publish_shortcut)
         return view
     }
@@ -102,8 +104,18 @@ class ShortcutInsertFragment: Fragment() {
         editShortcutButton.setOnClickListener{
             callbacks?.onEditShortcutSelected(entry.id,shortcut.id)
         }
+        previewButton.setOnClickListener{
+            var resultText = shortcut.result
+            Log.d(TAG, "Result text: $resultText")
+            if (resultText.contains("/1/")){
+                Log.d(TAG, "Contains /1/")
+                resultText = resultText.replace("/1/","${fillFields[0]}")
+            }
+            Log.d(TAG, "Result text: $resultText")
+            result.setText(resultText)
+        }
         publishShortcutButton.setOnClickListener {
-            entry.writing+=shortcut.result
+            entry.writing+=result.getText()
             callbacks?.onReturnEntrySelected(entry.id)
         }
     }
