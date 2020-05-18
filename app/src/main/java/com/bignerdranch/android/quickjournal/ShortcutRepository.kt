@@ -28,6 +28,11 @@ class ShortcutRepository private constructor(context: Context) {
             shortcutDao.addShortcut(shortcut)
         }
     }
+    fun deleteShortcut(shortcut: Shortcut){
+        executor.execute {
+            shortcutDao.deleteShortcut(shortcut)
+        }
+    }
     companion object {
         private var INSTANCE: ShortcutRepository? = null
         fun initialize(context: Context) {

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <EditText
@@ -22,21 +24,81 @@
         android:layout_marginTop="16dp"
         android:inputType="text"
         android:maxLines="1"
-        android:hint = "Identifier"
+        android:hint = "Identifier 1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shortcut_title" />
-    <!--Other edittexts for fields added by button below, constraints and such will be adjusted-->
-    <ImageButton
-        android:id="@+id/add_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+
+    <EditText
+        android:id="@+id/field2"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_add"
+        android:hint="Identifier 2"
+        android:inputType="text"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@+id/field3"
         app:layout_constraintStart_toEndOf="@+id/field1"
         app:layout_constraintTop_toBottomOf="@+id/shortcut_title" />
 
+    <EditText
+        android:id="@+id/field3"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd = "16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Identifier 3"
+        android:inputType="text"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shortcut_title" />
+    <EditText
+        android:id="@+id/field4"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:hint = "Identifier 1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field1" />
+
+    <EditText
+        android:id="@+id/field5"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:hint="Identifier 2"
+        android:inputType="text"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@+id/field6"
+        app:layout_constraintStart_toEndOf="@+id/field4"
+        app:layout_constraintTop_toBottomOf="@+id/field2" />
+    <EditText
+        android:id="@+id/field6"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd = "16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Identifier 3"
+        android:inputType="text"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:id = "@+id/instruct"
+        android:text="Use /1/, /2/, etc to put in the replacement text"
+        app:layout_constraintBottom_toBottomOf="@+id/field5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/result" />
     <EditText
         android:id="@+id/result"
         android:layout_width="match_parent"
@@ -47,16 +109,17 @@
         android:layout_marginBottom="16dp"
         android:hint = "Start typing resulting text here..."
         android:gravity = "top"
-        app:layout_constraintBottom_toTopOf="@+id/publish_shortcut"
+        app:layout_constraintBottom_toTopOf="@+id/delete_shortcut"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/field1" />
+        app:layout_constraintTop_toBottomOf="@+id/instruct" />
+
     <Button
-        android:id="@+id/publish_shortcut"
+        android:id="@+id/delete_shortcut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Add to Shortcuts"
+        android:text="Delete This Shortcut"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

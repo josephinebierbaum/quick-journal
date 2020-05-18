@@ -20,6 +20,9 @@ class EntryEditViewModel() : ViewModel() {
     fun saveEntry(entry: JournalEntry) {
         entryRepository.updateEntry(entry)
     }
+    fun deleteEntry(entry: JournalEntry){
+        entryRepository.deleteEntry(entry)
+    }
     fun getPhoto1File(entry: JournalEntry): File {
         return entryRepository.getPhoto1File(entry)
     }

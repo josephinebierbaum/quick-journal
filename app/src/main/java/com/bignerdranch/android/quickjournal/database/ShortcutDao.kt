@@ -1,10 +1,7 @@
 package com.bignerdranch.android.quickjournal.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.bignerdranch.android.quickjournal.Shortcut
 import java.util.*
 
@@ -18,4 +15,6 @@ interface ShortcutDao {
     fun updateShortcut(shortcut: Shortcut)
     @Insert
     fun addShortcut(shortcut: Shortcut)
+    @Delete
+    fun deleteShortcut(shortcut:Shortcut)
 }

@@ -80,7 +80,7 @@ class ShortcutListFragment : Fragment() {
         fun bind(shortcut:Shortcut){
             this.shortcut = shortcut
             titleTextView.text = this.shortcut.title
-            fieldTextView.text = this.shortcut.field1
+            fieldTextView.text = "${this.shortcut.field1}, ${this.shortcut.field2}, ${this.shortcut.field3}, ${this.shortcut.field4}, ${this.shortcut.field5}, ${this.shortcut.field6}"
             resultTextView.text = this.shortcut.result
         }
         override fun onClick(v: View) {

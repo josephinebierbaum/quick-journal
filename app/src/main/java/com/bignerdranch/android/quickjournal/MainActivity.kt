@@ -3,6 +3,7 @@ package com.bignerdranch.android.quickjournal
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(),JournalListFragment.Callbacks, EntryFra
         val fragment = EntryEditFragment.newInstance(entryId)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+            .replace(R.id.fragment_container, fragment, "EditEntryFrag")
             .addToBackStack(null)
             .commit()
     }
@@ -69,8 +70,11 @@ class MainActivity : AppCompatActivity(),JournalListFragment.Callbacks, EntryFra
     override fun onReturnEntrySelected(entryId: UUID) {
         Log.d(TAG, "MainActivity.ReturnEntrySelected: $entryId")
         val fragment = EntryEditFragment.newInstance(entryId)
+        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val home = JournalListFragment.newInstance()
         supportFragmentManager
             .beginTransaction()
+            .add(R.id.fragment_container,home)
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()

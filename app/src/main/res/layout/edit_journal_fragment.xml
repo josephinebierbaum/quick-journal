@@ -89,11 +89,11 @@
         app:layout_constraintTop_toBottomOf="@+id/entry_writing" />
 
     <Button
-        android:id="@+id/publish_entry"
+        android:id="@+id/delete_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Add to Journal"
+        android:text="Delete Journal Entry"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

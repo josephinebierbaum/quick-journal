@@ -23,9 +23,13 @@ class ShortcutEditFragment: Fragment() {
     private lateinit var shortcut: Shortcut
     private lateinit var shortcutTitle: EditText
     private lateinit var field1: EditText
-    private lateinit var addFieldButton: ImageButton
+    private lateinit var field2: EditText
+    private lateinit var field3: EditText
+    private lateinit var field4: EditText
+    private lateinit var field5: EditText
+    private lateinit var field6: EditText
     private lateinit var result: EditText
-    private lateinit var publishShortcutButton: Button
+    private lateinit var deleteShortcutButton: Button
     private val shortcutEditViewModel: ShortcutEditViewModel by lazy {
         ViewModelProviders.of(this).get(ShortcutEditViewModel::class.java)
     }
@@ -44,9 +48,13 @@ class ShortcutEditFragment: Fragment() {
         val view = inflater.inflate(R.layout.edit_shortcut_fragment, container, false)
         shortcutTitle = view.findViewById(R.id.shortcut_title)
         field1 = view.findViewById(R.id.field1)
-        addFieldButton = view.findViewById(R.id.add_field)
+        field2 = view.findViewById(R.id.field2)
+        field3 = view.findViewById(R.id.field3)
+        field4 = view.findViewById(R.id.field4)
+        field5 = view.findViewById(R.id.field5)
+        field6 = view.findViewById(R.id.field6)
         result = view.findViewById(R.id.result)
-        publishShortcutButton = view.findViewById(R.id.publish_shortcut)
+        deleteShortcutButton = view.findViewById(R.id.delete_shortcut)
         return view
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +112,111 @@ class ShortcutEditFragment: Fragment() {
 // This one too
             }
         }
+        val field2Watcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+// This space intentionally left blank
+            }
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                shortcut.field2 = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+// This one too
+            }
+        }
+        val field3Watcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+// This space intentionally left blank
+            }
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                shortcut.field3 = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+// This one too
+            }
+        }
+        val field4Watcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+// This space intentionally left blank
+            }
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                shortcut.field4 = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+// This one too
+            }
+        }
+        val field5Watcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+// This space intentionally left blank
+            }
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                shortcut.field5 = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+// This one too
+            }
+        }
+        val field6Watcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+// This space intentionally left blank
+            }
+            override fun onTextChanged(
+                sequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                shortcut.field6 = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+// This one too
+            }
+        }
         val resultWatcher = object : TextWatcher {
             override fun beforeTextChanged(
                 sequence: CharSequence?,
@@ -127,9 +240,14 @@ class ShortcutEditFragment: Fragment() {
         }
         shortcutTitle.addTextChangedListener(titleWatcher)
         field1.addTextChangedListener(field1Watcher)
+        field2.addTextChangedListener(field2Watcher)
+        field3.addTextChangedListener(field3Watcher)
+        field4.addTextChangedListener(field4Watcher)
+        field5.addTextChangedListener(field5Watcher)
+        field6.addTextChangedListener(field6Watcher)
         result.addTextChangedListener(resultWatcher)
-        publishShortcutButton.setOnClickListener {
-            //add code to save later
+        deleteShortcutButton.setOnClickListener {
+            shortcutEditViewModel.deleteShortcut(shortcut)
         }
     }
     override fun onStop() {
@@ -139,6 +257,11 @@ class ShortcutEditFragment: Fragment() {
     private fun updateUI() {
         shortcutTitle.setText(shortcut.title)
         field1.setText(shortcut.field1)
+        field2.setText(shortcut.field2)
+        field3.setText(shortcut.field3)
+        field4.setText(shortcut.field4)
+        field5.setText(shortcut.field5)
+        field6.setText(shortcut.field6)
         result.setText(shortcut.result)
 
     }

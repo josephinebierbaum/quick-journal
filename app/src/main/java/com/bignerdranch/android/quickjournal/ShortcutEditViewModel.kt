@@ -19,4 +19,7 @@ class ShortcutEditViewModel: ViewModel() {
     fun saveShortcut(shortcut: Shortcut) {
         shortcutRepository.updateShortcut(shortcut)
     }
+    fun deleteShortcut(shortcut: Shortcut){
+        shortcutRepository.deleteShortcut(shortcut)
+    }
 }

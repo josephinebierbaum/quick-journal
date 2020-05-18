@@ -36,7 +36,7 @@ class EntryEditFragment: Fragment() {
     private lateinit var entryPhoto1: ImageView
     private lateinit var entryPhoto2: ImageView
     private lateinit var addShortcutButton: ImageButton
-    private lateinit var publishEntryButton: Button
+    private lateinit var deleteEntryButton: Button
     private lateinit var photo1File: File
     private lateinit var photo2File: File
     private lateinit var photo1Uri: Uri
@@ -64,7 +64,7 @@ class EntryEditFragment: Fragment() {
         entryPhoto1 = view.findViewById(R.id.entry_photo1)
         entryPhoto2 = view.findViewById(R.id.entry_photo2)
         addShortcutButton = view.findViewById(R.id.add_shortcut)
-        publishEntryButton = view.findViewById(R.id.publish_entry)
+        deleteEntryButton = view.findViewById(R.id.delete_entry)
         return view
     }
     override fun onStart() {
@@ -116,8 +116,8 @@ class EntryEditFragment: Fragment() {
         addShortcutButton.setOnClickListener{
             callbacks?.onShortcutListSelected(entry.id)
         }
-        publishEntryButton.setOnClickListener {
-            entryEditViewModel.saveEntry(entry)
+        deleteEntryButton.setOnClickListener {
+            entryEditViewModel.deleteEntry(entry)
         }
         entryPhoto1.apply {
             val packageManager: PackageManager = requireActivity().packageManager
