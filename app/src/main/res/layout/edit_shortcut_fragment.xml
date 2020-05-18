@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <EditText
         android:id="@+id/shortcut_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="serif"
         android:hint="Shortcut Name"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,12 +93,14 @@
         app:layout_constraintTop_toBottomOf="@+id/field3" />
 
     <TextView
+        android:id="@+id/instruct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:id = "@+id/instruct"
         android:text="Use /1/, /2/, etc to put in the replacement text"
+        android:textSize="12sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/field5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,5 +16,5 @@ data class JournalEntry (@PrimaryKey val id: UUID = UUID.randomUUID(),
     val photo1
         get() = "IMG_$id.jpg"
     val photo2
-        get() = "IMG_$id.jpg"
+        get() = "IMG_$id 2.jpg"
 }
