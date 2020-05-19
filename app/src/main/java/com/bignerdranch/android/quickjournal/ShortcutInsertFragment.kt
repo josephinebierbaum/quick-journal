@@ -167,7 +167,7 @@ class ShortcutInsertFragment: Fragment() {
                 before: Int,
                 count: Int
             ) {
-                fillFields[4] = sequence.toString()
+                fillFields[3] = sequence.toString()
             }
             override fun afterTextChanged(sequence: Editable?) {
 // This one too
